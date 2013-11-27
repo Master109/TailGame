@@ -1,5 +1,8 @@
 #This is the code for the tailGame game
 
+//@codekit-prepend helperFunctions.coffee
+//@codekit-prepend enemies.coffee
+
 $ = jQuery
 
 #little helper functions

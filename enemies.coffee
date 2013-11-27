@@ -20,15 +20,15 @@ class Enemy
 class EnemyFollower extends Enemy
 	constructor: (@x, @y) ->
 		@maxSpeed = .2
+		@SIZE = ($ "#myCanvas").width() * .005;
 
 	draw: ->
 		context.fillStyle = rgb(255, 0, 0)
-		circle(@x, @y, 5)
+		circle(@x, @y, @SIZE)
 
 	run: ->
 		@velX = playerX - @x
 		@velY = playerY - @y
-
 		super
  
 class EnemyRunsAwayAndShoots extends Enemy
@@ -54,6 +54,11 @@ class EnemyRunsAwayAndShoots extends Enemy
 			gameObjects.push(new Bullet(@x, @y, (playerX-@x)*.001, (playerY-@y)*.001))
 			@shootCounter = 0
 
+		if @x > ($ "#myCanvas").width() + (@SIZE / 2 or @x < -@SIZE / 2 or @y > ($ "#myCanvas").height() + (@SIZE / 2) or @y < -@SIZE / 2
+		{
+			thisEnemy = gameObjects.indexOf(this);
+			gameObjects.splice(thisEnemy, 1);
+		}
 		super
 
  class Bullet extends Enemy
