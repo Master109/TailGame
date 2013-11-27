@@ -2,9 +2,20 @@
 
 $ = jQuery
 
-newWidth = console.log Math.min(($ "#myCanvas").width(), ($ "#myCanvas").height())
-($ "#myCanvas").css {width: newWidth + "px"}
-($ "#myCanvas").css {height: newWidth + "px"}
+$ ->
+	newWidth = Math.min(($ "#myCanvas").width(), ($ "#myCanvas").height())
+	($ "#myCanvas").width(newWidth)
+	($ "#myCanvas").height(newWidth)
+
+	($ "#myCanvas").click( ->
+		console.log "LOL"
+		console.log ""
+		)
+
+	($ "#myCanvas").mousemove( (event) ->
+		x = event.pageX / 2
+		y = event.pageY / 2
+		)
 
 console.log "TESTf"
 
@@ -32,13 +43,3 @@ draw = () ->
 	setTimeout(draw, 1)
 
 draw()
-
-($ "#myCanvas").click( ->
-	console.log "LOL"
-	console.log ""
-	)
-
-($ "#myCanvas").mousemove( (event) ->
-	x = event.pageX / 2
-	y = event.pageY / 2
-	)
