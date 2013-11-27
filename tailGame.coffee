@@ -5,7 +5,7 @@ $ = jQuery
 #little helper functions
 rgb = (r, g, b) ->
 	"rgb(" + r + ", " + g + ", " + b + ")" #note that return is implied here
-rgb = (r, g, b, a) ->
+rgba = (r, g, b, a) ->
 	"rgb(" + r + ", " + g + ", " + b + ", " + a + ")" #note that return is implied here
 
 canvas = document.getElementById("myCanvas")
@@ -113,6 +113,8 @@ paused = false
 
 #call draw for the first time.
 draw()
+
+console.log rgb(0, 0, 0)
 
 $ ->
 	newWidth = Math.min(($ "#myCanvas").width(), ($ "#myCanvas").height())
