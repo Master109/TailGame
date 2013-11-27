@@ -2,6 +2,12 @@
 
 $ = jQuery
 
+#little helper functions
+rgb = (r, g, b) ->
+	"rgb(" + r + ", " + g + ", " + b + ")" #note that return is implied here
+rgb = (r, g, b, a) ->
+	"rgb(" + r + ", " + g + ", " + b + ", " + a + ")" #note that return is implied here
+
 canvas = document.getElementById("myCanvas")
 console.log canvas
 
@@ -15,13 +21,12 @@ playerX = 0
 playerY = 0
 
 class EnemyFollower
-  constructor: (x, y) ->
-    @x = x
-    @y = y
+  constructor: (@x, @y) ->
     @moveSpeed = .1
 
   draw: ->
-  	circle(@x, @y, 10)
+  	context.fillStyle = "rgb(255, 0, 0)"
+  	circle(@x, @y, 5)
 
   run: ->
   	if @x < playerX
@@ -34,10 +39,48 @@ class EnemyFollower
   	else
   		@y -= @moveSpeed
 
+class EnemyRunsAwayAndShoots
+	constructor: (@x, @y) ->
+		@moveSpeed = .1
+
+		@deadline = 100
+		@shootCounter = 0
+
+	draw: ->
+		context.fillStyle = "rgb(255, 255, 0)"
+		circle(@x, @y, 20)
+
+	run: ->
+	  	if @x > playerX
+	  		@x += @moveSpeed
+	  	else
+	  		@x -= @moveSpeed
+
+	  	if @y > playerY
+	  		@y += @moveSpeed
+	  	else
+  			@y -= @moveSpeed
+
+  		@shootCounter++
+  		if @shootCounter == @deadline
+	  		gameObjects.push(new Bullet(@x, @y, 0, 0))
+	  		@shootCounter = 0
+
+ class Bullet
+ 	constructor: (@x, @y, @velX, @velY) ->
+
+ 	run: ->
+ 		@x += @velX
+ 		@y += @velY
+
+ 	draw: ->
+ 		context.fillStyle = rgb(0, 0, 0)
+ 		circle(@x, @y, 3)
+
 circle = (centerX, centerY, radius) ->
 	context.beginPath();
 	context.arc(centerX, centerY, radius, 0, 2 * Math.PI, true);
-	context.stroke()
+	context.fill()
 
 draw = () ->
 	context.fillStyle = "rgb(127, 127, 127)"
@@ -45,7 +88,7 @@ draw = () ->
 
 	#Draw the player
 	context.fillStyle = "rgb(0, 200, 0)"
-	context.fillRect(playerX, playerY, 10, 10)
+	circle(playerX, playerY, 10)
 
 	#Move all of the gameObjects
 	for object in gameObjects
@@ -63,11 +106,12 @@ draw = () ->
 	setTimeout(draw, 1)
 
 #gameObjects will store all of the enemies
-gameObjects = [new EnemyFollower(10, 10), new EnemyFollower(20, 20)]
+gameObjects = [new EnemyFollower(10, 10), new EnemyFollower(20, 20), new EnemyRunsAwayAndShoots(100, 100)]
 
-#If paused is true, then everything will still be drawn, but it wpn't be run.
+#If paused is true, then everything will still be drawn, but it won't be run.
 paused = false
 
+#call draw for the first time.
 draw()
 
 $ ->
