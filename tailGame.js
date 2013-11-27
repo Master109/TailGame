@@ -5,7 +5,7 @@ This class should hold all of the enemy classes and related classes
 
 
 (function() {
-  var $, Enemy, EnemyFollower, EnemyRunsAwayAndShoots, canvas, circle, context, draw, gameObjects, mouseX, mouseY, paused, playerX, playerY, rgb, rgba,
+  var $, Enemy, EnemyFollower, EnemyRunsAwayAndShoots, canvas, circle, context, dist, draw, gameObjects, mouseX, mouseY, paused, playerX, playerY, rgb, rgba,
     __hasProp = {}.hasOwnProperty,
     __extends = function(child, parent) { for (var key in parent) { if (__hasProp.call(parent, key)) child[key] = parent[key]; } function ctor() { this.constructor = child; } ctor.prototype = parent.prototype; child.prototype = new ctor(); child.__super__ = parent.prototype; return child; };
 
@@ -15,6 +15,12 @@ This class should hold all of the enemy classes and related classes
     Enemy.prototype.draw = function() {};
 
     Enemy.prototype.run = function() {
+      var triedSpeed;
+      triedSpeed = dist(this.velX, this.velY);
+      if (triedSpeed > this.maxSpeed) {
+        this.velX *= this.maxSpeed / triedSpeed;
+        this.velY *= this.maxSpeed / triedSpeed;
+      }
       this.x += this.velX;
       return this.y += this.velY;
     };
@@ -29,7 +35,7 @@ This class should hold all of the enemy classes and related classes
     function EnemyFollower(x, y) {
       this.x = x;
       this.y = y;
-      this.moveSpeed = .1;
+      this.maxSpeed = .2;
     }
 
     EnemyFollower.prototype.draw = function() {
@@ -38,16 +44,9 @@ This class should hold all of the enemy classes and related classes
     };
 
     EnemyFollower.prototype.run = function() {
-      if (this.x < playerX) {
-        this.x += this.moveSpeed;
-      } else {
-        this.x -= this.moveSpeed;
-      }
-      if (this.y < playerY) {
-        return this.y += this.moveSpeed;
-      } else {
-        return this.y -= this.moveSpeed;
-      }
+      this.velX = playerX - this.x;
+      this.velY = playerY - this.y;
+      return EnemyFollower.__super__.run.apply(this, arguments);
     };
 
     return EnemyFollower;
@@ -62,7 +61,7 @@ This class should hold all of the enemy classes and related classes
     function EnemyRunsAwayAndShoots(x, y) {
       this.x = x;
       this.y = y;
-      this.moveSpeed = .1;
+      this.maxSpeed = .1;
       this.deadline = 100;
       this.shootCounter = 0;
       this.velX = 0;
@@ -75,13 +74,14 @@ This class should hold all of the enemy classes and related classes
     };
 
     EnemyRunsAwayAndShoots.prototype.run = function() {
-      this.velX = 0;
+      this.velX = this.x - playerX;
+      this.velY = this.y - playerY;
       this.shootCounter++;
       if (this.shootCounter === this.deadline) {
         gameObjects.push(new Bullet(this.x, this.y, (playerX - this.x) * .001, (playerY - this.y) * .001));
         this.shootCounter = 0;
       }
-      return console.log(EnemyRunsAwayAndShoots.__super__.run.apply(this, arguments));
+      return EnemyRunsAwayAndShoots.__super__.run.apply(this, arguments);
     };
 
     Bullet = (function(_super1) {
@@ -93,11 +93,6 @@ This class should hold all of the enemy classes and related classes
         this.velX = velX;
         this.velY = velY;
       }
-
-      Bullet.prototype.run = function() {
-        this.x += this.velX;
-        return this.y += this.velY;
-      };
 
       Bullet.prototype.draw = function() {
         context.fillStyle = rgb(0, 0, 0);
@@ -137,6 +132,16 @@ This class should hold all of the enemy classes and related classes
       }
     }
     return setTimeout(draw, 1);
+  };
+
+  /* --------------------------------------------
+       Begin helperFunctions.coffee
+  --------------------------------------------
+  */
+
+
+  dist = function(x, y) {
+    return Math.sqrt(x * x + y * y);
   };
 
   /* --------------------------------------------

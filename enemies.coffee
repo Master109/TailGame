@@ -8,31 +8,32 @@ class Enemy
 	draw: ->
 
 	run: ->
+		triedSpeed = dist(@velX, @velY)
+
+		if triedSpeed > @maxSpeed
+			@velX *= @maxSpeed / triedSpeed
+			@velY *= @maxSpeed / triedSpeed
+
 		@x += @velX
 		@y += @velY
 
 class EnemyFollower extends Enemy
-  constructor: (@x, @y) ->
-    @moveSpeed = .1
+	constructor: (@x, @y) ->
+		@maxSpeed = .2
 
-  draw: ->
-  	context.fillStyle = rgb(255, 0, 0)
-  	circle(@x, @y, 5)
+	draw: ->
+		context.fillStyle = rgb(255, 0, 0)
+		circle(@x, @y, 5)
 
-  run: ->
-  	if @x < playerX
-  		@x += @moveSpeed
-  	else
-  		@x -= @moveSpeed
+	run: ->
+		@velX = playerX - @x
+		@velY = playerY - @y
 
-  	if @y < playerY
-  		@y += @moveSpeed
-  	else
-  		@y -= @moveSpeed
+		super
  
 class EnemyRunsAwayAndShoots extends Enemy
 	constructor: (@x, @y) ->
-		@moveSpeed = .1
+		@maxSpeed = .1
 
 		@deadline = 100
 		@shootCounter = 0
@@ -45,21 +46,18 @@ class EnemyRunsAwayAndShoots extends Enemy
 		circle(@x, @y, 20)
 
 	run: ->
-		@velX = 0
+		@velX = @x - playerX
+		@velY = @y - playerY
 
 		@shootCounter++
 		if @shootCounter == @deadline
 			gameObjects.push(new Bullet(@x, @y, (playerX-@x)*.001, (playerY-@y)*.001))
 			@shootCounter = 0
 
-		console.log super
+		super
 
  class Bullet extends Enemy
  	constructor: (@x, @y, @velX, @velY) ->
-
- 	run: ->
- 		@x += @velX
- 		@y += @velY
 
  	draw: ->
  		context.fillStyle = rgb(0, 0, 0)
