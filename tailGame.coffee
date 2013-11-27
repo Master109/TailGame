@@ -36,14 +36,17 @@ $ ->
 	($ "#myCanvas").width(newWidth)
 	($ "#myCanvas").height(newWidth)
 
+	($ "#myCanvas").css("width", newWidth)
+	($ "#myCanvas").css("height", newWidth)
+
 	($ "#myCanvas").click( ->
 		console.log "LOL"
 		console.log ""
 		)
 
 	($ "body").mousemove( (event) ->
-		mouseX = event.pageX / 3
-		mouseY = event.pageY / 3
+		mouseX = event.pageX
+		mouseY = event.pageY
 		)
 
 	($ "#pauseButton").click( ->

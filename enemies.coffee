@@ -2,12 +2,21 @@
 This class should hold all of the enemy classes and related classes
 ###
 
-class EnemyFollower
+class Enemy
+	constructor: () ->
+
+	draw: ->
+
+	run: ->
+		@x += @velX
+		@y += @velY
+
+class EnemyFollower extends Enemy
   constructor: (@x, @y) ->
     @moveSpeed = .1
 
   draw: ->
-  	context.fillStyle = "rgb(255, 0, 0)"
+  	context.fillStyle = rgb(255, 0, 0)
   	circle(@x, @y, 5)
 
   run: ->
@@ -20,35 +29,32 @@ class EnemyFollower
   		@y += @moveSpeed
   	else
   		@y -= @moveSpeed
-
-class EnemyRunsAwayAndShoots
+ 
+class EnemyRunsAwayAndShoots extends Enemy
 	constructor: (@x, @y) ->
 		@moveSpeed = .1
 
 		@deadline = 100
 		@shootCounter = 0
 
+		@velX = 0
+		@velY = 0
+
 	draw: ->
-		context.fillStyle = "rgb(255, 255, 0)"
+		context.fillStyle = rgb(255, 255, 0)
 		circle(@x, @y, 20)
 
 	run: ->
-	  	if @x > playerX
-	  		@x += @moveSpeed
-	  	else
-	  		@x -= @moveSpeed
+		@velX = 0
 
-	  	if @y > playerY
-	  		@y += @moveSpeed
-	  	else
-  			@y -= @moveSpeed
+		@shootCounter++
+		if @shootCounter == @deadline
+			gameObjects.push(new Bullet(@x, @y, (playerX-@x)*.001, (playerY-@y)*.001))
+			@shootCounter = 0
 
-  		@shootCounter++
-  		if @shootCounter == @deadline
-	  		gameObjects.push(new Bullet(@x, @y, (playerX-@x)*.001, (playerY-@y)*.001))
-	  		@shootCounter = 0
+		console.log super
 
- class Bullet
+ class Bullet extends Enemy
  	constructor: (@x, @y, @velX, @velY) ->
 
  	run: ->
@@ -65,11 +71,11 @@ circle = (centerX, centerY, radius) ->
 	context.fill()
 
 draw = () ->
-	context.fillStyle = "rgb(127, 127, 127)"
+	context.fillStyle = rgb(127, 127, 127)
 	context.fillRect(0, 0, 1000, 1000)
 
 	#Draw the player
-	context.fillStyle = "rgb(0, 200, 0)"
+	context.fillStyle = rgb(0, 200, 0)
 	circle(playerX, playerY, 10)
 
 	#Move all of the gameObjects
