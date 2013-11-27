@@ -2,20 +2,9 @@
 
 $ = jQuery
 
-$ ->
-	newWidth = Math.min(($ "#myCanvas").width(), ($ "#myCanvas").height())
-	($ "#myCanvas").width(newWidth)
-	($ "#myCanvas").height(newWidth)
-
-	($ "#myCanvas").click( ->
-		console.log "LOL"
-		console.log ""
-		)
-
-	($ "#myCanvas").mousemove( (event) ->
-		x = event.pageX / 2
-		y = event.pageY / 2
-		)
+newWidth = console.log Math.min(($ "#myCanvas").width(), ($ "#myCanvas").height())
+($ "#myCanvas").css {width: newWidth + "px"}
+($ "#myCanvas").css {height: newWidth + "px"}
 
 console.log "TESTf"
 
@@ -25,8 +14,13 @@ console.log canvas
 context = canvas.getContext("2d")
 console.log context
 
-x = 0
+//x = 0
 y = 0
+
+class EnemyFollower
+  constructor: (x, y) ->
+    @x = x
+    @y = y
 
 circle = (centerX, centerY, radius) ->
 	context.beginPath();
@@ -43,3 +37,13 @@ draw = () ->
 	setTimeout(draw, 1)
 
 draw()
+
+($ "#myCanvas").click( ->
+	console.log "LOL"
+	console.log ""
+	)
+
+($ "#myCanvas").mousemove( (event) ->
+	x = event.pageX / 2
+	y = event.pageY / 2
+	)
