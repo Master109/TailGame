@@ -14,7 +14,7 @@ console.log canvas
 context = canvas.getContext("2d")
 console.log context
 
-//x = 0
+x = 0
 y = 0
 
 class EnemyFollower
